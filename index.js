@@ -16,12 +16,13 @@ try {
 
     fs.writeFile("system.json", formatted, 'utf8', function (err) {
       if (err) return console.log(err);
+      fs.readFile("system.json", 'utf8', function (err,data) {
+        console.log("system.json after replace");
+        console.log(data);
+      });
     });
   });
-  fs.readFile("system.json", 'utf8', function (err,data) {
-    console.log("system.json after replace");
-    console.log(data);
-  });
+
 } catch (error) {
   core.setFailed(error.message);
 }
