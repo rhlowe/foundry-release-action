@@ -1,0 +1,29 @@
+{
+  "name": "foundry-release-action",
+  "version": "0.1.0",
+  "description": "GitHub Action to Release Foundry VTT Systems and Modules",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foundryvtt-dcc/foundry-release-action.git"
+  },
+  "keywords": [
+    "Github",
+    "Action",
+    "Foundry",
+    "VTT"
+  ],
+  "author": "Tim L. White (https://github.com/cyface)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foundryvtt-dcc/foundry-release-action/issues"
+  },
+  "homepage": "https://github.com/foundryvtt-dcc/foundry-release-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.7",
+    "@actions/github": "^4.0.0"
+  }
+}
