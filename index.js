@@ -12,11 +12,11 @@ try {
   const payload = JSON.stringify(github.context.payload, undefined, 2)
   console.log(`The event payload: ${payload}`);
 
-  fs.readFile("system.json", 'utf8', function (err,data) {
-
+  fs.readFile("./system.json", 'utf8', function (err,data) {
+    console.log(data);
     let formatted = data.replace(/VERSION/g, '0.1');
 
-    fs.writeFile("system.json", formatted, 'utf8', function (err) {
+    fs.writeFile("./system.json", formatted, 'utf8', function (err) {
       if (err) return console.log(err);
     });
   });
