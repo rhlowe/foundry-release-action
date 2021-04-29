@@ -15,7 +15,7 @@ try {
   fs.readFile("system.json", 'utf8', function (err,data) {
     console.log("system.json before replace");
     console.log(data);
-    let formatted = data.replace(/VERSION/g, '0.1');
+    let formatted = data.replace(/{{VERSION}}/g, '0.1');
 
     fs.writeFile("system.json", formatted, 'utf8', function (err) {
       if (err) return console.log(err);
