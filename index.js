@@ -7,16 +7,10 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 
-  await fs.readFile("system.json", 'utf8', function (err,data) {
-    console.log("system.json before replace");
-    console.log(data);
+    fs.readFile("system.json", 'utf8', function (err,data) {
     let formatted = data.replace(/{{VERSION}}/g, '0.1');
-    console.log("data after replace");
-    console.log(formatted);
 
-    fs.writeFile("system.json", formatted, 'utf8', function (err) {
-      if (err) return console.log(err);
-    });
+     fs.writeFileSync("system.json", formatted, 'utf8');
   });
 
   fs.readFile("system.json", 'utf8', function (err,data) {
