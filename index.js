@@ -7,7 +7,7 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 
-  fs.readFileSync('system.json', 'utf8')
+  data = fs.readFileSync('system.json', 'utf8')
   let formatted = data.replace(/{{VERSION}}/g, '0.1')
   fs.writeFileSync('system.json', formatted, 'utf8')
 
