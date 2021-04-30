@@ -1,5 +1,10 @@
 name: 'Foundry Release Action'
 description: 'GitHub Action to Release Foundry VTT Systems and Modules'
+inputs:
+  actionToken:
+    description: 'Github Token'
+    required: true
+    default: 'World'
 runs:
   using: 'node12'
   main: 'index.js'
