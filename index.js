@@ -15,7 +15,7 @@ try {
   const actionToken = core.getInput('actionToken')
   const octokit = github.getOctokit(actionToken)
 
-  const createReleaseResponse = await octokit.rest.repos.createRelease({
+  const createReleaseResponse = octokit.rest.repos.createRelease({
     owner: github.context.payload.sender.login,
     repo: github.context.payload.repository.name,
     tag_name: "v0.0",
@@ -23,7 +23,9 @@ try {
     body: "test release",
     draft: true,
     prerelease: true
-  });
+  })
+
+  console.log(createReleaseResponse)
 
 } catch
   (error) {
