@@ -30,7 +30,7 @@ try {
   let formatted = data.replace(/{{VERSION}}/g, '0.1')
   fs.writeFileSync('system.json', formatted, 'utf8')
 
-
+  await createRelease()
 
 } catch
   (error) {
