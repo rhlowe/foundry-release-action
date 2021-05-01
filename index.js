@@ -44,7 +44,7 @@ async function getCommitLog () {
       per_page: 100,
       repo: repo,
       sha: "main",
-      since: latestRelease.created_at,
+      since: latestRelease.data.created_at,
     })
     let commitListMarkdown = ""
     commitList.data.forEach(commit => {
