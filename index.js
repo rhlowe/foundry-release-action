@@ -15,24 +15,23 @@ const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
 async function createRelease (versionNumber) {
-  // Create Release
   try {
     return await octokit.rest.repos.createRelease({
       owner: owner,
       repo: repo,
       tag_name: `${versionNumber}`,
-      name: `${versionNumber} ${Date.now()}`,
+      name: `${versionNumber}`,
       body: `Release ${versionNumber}`,
       draft: true,
     })
-  } catch
-    (error) {
+  } catch (error) {
     core.setFailed(error.message)
   }
 }
 
 async function uploadAssets (releaseResponse) {
   try {
+    // Upload Zip
     const zipData = await fs.readFileSync(zipName)
     await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
@@ -42,6 +41,7 @@ async function uploadAssets (releaseResponse) {
       data: zipData
     })
 
+    // Upload Manifest
     const manifestData = await fs.readFileSync(manifestFileName, 'utf-8')
     await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
