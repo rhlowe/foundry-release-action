@@ -51,8 +51,7 @@ async function getCommitLog () {
     console.log('COMMITS SINCE THAT TAG DATE')
     console.log(commitList)
     commitList.data.forEach(commit => {
-      console.log(commit.author.name)
-      console.log(commit.commit.message)
+      console.log(`* ${commit.commit.committer.name} - ${commit.commit.message}`)
     })
 
     return commitList
