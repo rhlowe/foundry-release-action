@@ -74,8 +74,8 @@ async function run () {
 
     // Replace Data in Manifest
     const data = fs.readFileSync(manifestFileName, 'utf8')
-    const downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
-    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/system.json`
+    const downloadURL = `https://github.com/${owner}/${repo}/releases/download/v${versionNumber}/${repo}.zip`
+    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/v${versionNumber}/system.json`
     const formatted = data
       .replace(/{{VERSION}}/g, versionNumber)
       .replace(/{{DOWNLOAD_URL}}/g, downloadURL)
