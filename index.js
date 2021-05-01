@@ -67,10 +67,10 @@ async function run () {
 
     // Create Release
     const releaseResponse = await createRelease()
-    shell.exec('git config user.email "release@release.com"')
-    shell.exec('git config user.name "Release"')
-    shell.exec('git commit -am "release"')
-    shell.exec(`git archive -o ${zipName} HEAD`)
+    await shell.exec('git config user.email "release@release.com"')
+    await shell.exec('git config user.name "Release"')
+    await shell.exec('git commit -am "release"')
+    await shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadZip(releaseResponse)
 
   } catch
