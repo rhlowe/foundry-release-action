@@ -17,7 +17,7 @@ const zipName = `${github.context.payload.repository.name}.zip`
 async function createRelease (versionNumber) {
   // Create Release
   try {
-    const createReleaseResponse = await octokit.rest.repos.createRelease({
+    return await octokit.rest.repos.createRelease({
       owner: owner,
       repo: repo,
       tag_name: `v${versionNumber}`,
@@ -25,10 +25,6 @@ async function createRelease (versionNumber) {
       body: `Release v${versionNumber}`,
       draft: true,
     })
-
-    console.log('CREATE RELEASE RESPONSE:')
-    console.log(createReleaseResponse)
-    return createReleaseResponse
   } catch
     (error) {
     core.setFailed(error.message)
@@ -37,8 +33,6 @@ async function createRelease (versionNumber) {
 
 async function uploadAssets (releaseResponse) {
   try {
-    console.log('STARTING UPLOAD ASSET')
-
     const zipData = await fs.readFileSync(zipName)
     await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
@@ -49,16 +43,13 @@ async function uploadAssets (releaseResponse) {
     })
 
     const manifestData = await fs.readFileSync(manifestFileName, 'utf-8')
-    const uploadManifestResponse = await octokit.rest.repos.uploadReleaseAsset({
+    await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
       repo: repo,
       release_id: releaseResponse.data.id,
       name: manifestFileName,
       data: manifestData
     })
-
-    console.log('UPLOAD ASSET RESPONSE')
-    console.log(uploadManifestResponse)
   } catch (error) {
     core.setFailed(error.message)
   }
@@ -70,6 +61,7 @@ async function run () {
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
+    // Get versionNumber
     const versionNumber = await fs.readFileSync('version.txt')
 
     // Replace Data in Manifest
@@ -89,6 +81,11 @@ async function run () {
     await shell.exec(`git commit -am "Release ${versionNumber}"`)
     await shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadAssets(releaseResponse)
+
+    console.log(`**** Version v${versionNumber} Release Created!`)
+    console.log('**** URLs Embedded in Manifest:')
+    console.log(`** Download URL: ${downloadURL}`)
+    console.log(`** Manifest URL: ${manifestURL}`)
 
   } catch (error) {
     core.setFailed(error.message)
