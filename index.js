@@ -34,10 +34,13 @@ async function getCommitLog () {
     // Get Last Tag
     const releaseList = await octokit.rest.repos.listReleases({
       owner: owner,
+      per_page: 1,
       repo: repo,
     })
     console.log("RELEASE LIST")
     console.log(releaseList)
+    console.log("LAST RELEASE TAG")
+    console.log(releaseList.data[0].tag_name)
     return releaseList
   } catch (error) {
     core.setFailed(error.message)
