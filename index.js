@@ -36,7 +36,7 @@ async function uploadZip (releaseResponse) {
   try {
     console.log('STARTING UPLOAD ASSET')
     console.log(releaseResponse)
-    const fileData = fs.readFileSync(zipName, 'utf8')
+    const fileData = fs.readFileSync(zipName, 'binary')
 
     const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
