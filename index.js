@@ -62,7 +62,7 @@ async function run () {
       core.setFailed('manifestFileName must be system.json or module.json')
 
     // Get versionNumber from version.txt
-    let versionNumber = await fs.readFileSync('version.txt')
+    let versionNumber = await fs.readFileSync('version.txt', 'utf-8')
     versionNumber = `v${versionNumber.trim()}`
 
     // Replace Data in Manifest
