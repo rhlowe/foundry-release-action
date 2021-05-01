@@ -20,9 +20,9 @@ async function createRelease (versionNumber) {
     return await octokit.rest.repos.createRelease({
       owner: owner,
       repo: repo,
-      tag_name: `v${versionNumber}`,
-      name: `v${versionNumber} ${Date.now()}`,
-      body: `Release v${versionNumber}`,
+      tag_name: `${versionNumber}`,
+      name: `${versionNumber} ${Date.now()}`,
+      body: `Release ${versionNumber}`,
       draft: true,
     })
   } catch
@@ -61,13 +61,14 @@ async function run () {
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
-    // Get versionNumber
-    const versionNumber = await fs.readFileSync('version.txt').trim()
+    // Get versionNumber from version.txt
+    let versionNumber = await fs.readFileSync('version.txt')
+    versionNumber = `v${versionNumber.trim()}`
 
     // Replace Data in Manifest
     const data = fs.readFileSync(manifestFileName, 'utf8')
-    const downloadURL = `https://github.com/${owner}/${repo}/releases/download/v${versionNumber}/${repo}.zip`
-    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/v${versionNumber}/system.json`
+    const downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
+    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/system.json`
     const formatted = data
       .replace(/{{VERSION}}/g, versionNumber)
       .replace(/{{DOWNLOAD_URL}}/g, downloadURL)
@@ -82,7 +83,8 @@ async function run () {
     await shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadAssets(releaseResponse)
 
-    console.log(`**** Version v${versionNumber} Release Created!`)
+    // Log Results
+    console.log(`**** Version ${versionNumber} Release Created!`)
     console.log('**** URLs Embedded in Manifest:')
     console.log(`** Download URL: ${downloadURL}`)
     console.log(`** Manifest URL: ${manifestURL}`)
