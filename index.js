@@ -21,7 +21,7 @@ async function createRelease (versionNumber, gitLog) {
       repo: repo,
       tag_name: `${versionNumber}`,
       name: `${versionNumber}`,
-      body: `Release ${versionNumber}\n\n##Release Notes:\n${gitLog}`,
+      body: `Release ${versionNumber}\n\n## Release Notes:\n${gitLog}`,
       draft: true,
     })
   } catch (error) {
