@@ -22,7 +22,7 @@ async function createRelease (versionNumber) {
       repo: repo,
       tag_name: `v${versionNumber}`,
       name: `v${versionNumber} ${Date.now()}`,
-      body: 'Release v${versionNumber}',
+      body: `Release v${versionNumber}`,
       draft: true,
     })
 
