@@ -2,7 +2,12 @@
 
 This GitHub Action enables you to release a Foundry VTT System or Module by simply updating the 'version.txt' file in your main branch.
 
-Example workflow:
+Install Instructions
+--------------------
+
+Create a folder named `.github` at the root of your workflow, and inside that folder, create a `workflows` folder.
+
+In the `workflows` folder, create a file named `foundry_release.yml` with this content:
 
 ```
 on:
@@ -25,6 +30,10 @@ jobs:
           manifestFileName: 'system.json'
 ```
 
-For `manifestFileName` you will either supply `system.json` or `module.json` depending on your project.
+For `manifestFileName` you will either enter `system.json` or `module.json` depending on your project.
 
 You should not need to change `actionToken` from the example above.
+
+Create a file named `version.txt` at the root of your project, with your desired version number in it (without the `v`) - e.g. `0.20.0`.
+
+When that `version.txt` file is updated, this workflow will create a draft release.  You will need to edit that release with your preferred description, and then publish it.
