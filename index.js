@@ -65,7 +65,7 @@ async function uploadAssets (releaseResponse) {
 async function run () {
   try {
     // Validate manifestFileName
-    if (manifestFileName !== 'system.json' || manifestFileName !== 'module.json')
+    if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
     // Replace Data in Manifest
