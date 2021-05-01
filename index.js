@@ -1,8 +1,8 @@
 const core = require('@actions/core')
-const github = require('@actions/github');
+const github = require('@actions/github')
 const fs = require('fs')
 
-async function createRelease() {
+async function createRelease () {
   // Create Release
   const actionToken = core.getInput('actionToken')
   const octokit = github.getOctokit(actionToken)
@@ -10,9 +10,9 @@ async function createRelease() {
   const createReleaseResponse = await octokit.rest.repos.createRelease({
     owner: 'cyface',
     repo: 'foundryvtt-dcc/foundry-release-action-testbed',
-    tag_name: "v0.0",
-    name: "test release",
-    body: "test release",
+    tag_name: 'v0.0',
+    name: 'test release',
+    body: 'test release',
     draft: true,
     prerelease: true
   })
@@ -23,14 +23,14 @@ async function createRelease() {
 try {
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
+  console.log(`The event payload: ${payload}`)
 
   // Replace Data in Manifest
   data = fs.readFileSync('system.json', 'utf8')
   let formatted = data.replace(/{{VERSION}}/g, '0.1')
   fs.writeFileSync('system.json', formatted, 'utf8')
 
-  await createRelease()
+  createRelease()
 
 } catch
   (error) {
