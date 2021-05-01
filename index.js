@@ -42,10 +42,9 @@ async function getCommitLog () {
       owner: owner,
       per_page: 100,
       repo: repo,
+      sha: "main",
       since: latestRelease.created_at,
     })
-    console.log('COMMITS SINCE THAT TAG DATE')
-    console.log(commitList)
     let commitListMarkdown = ""
     commitList.data.forEach(commit => {
       commitListMarkdown += (`* ${commit.commit.committer.name} - ${commit.commit.message}\n`)
