@@ -29,9 +29,10 @@ async function createRelease () {
   }
 }
 
-async function uploadZip (createReleaseResponse) {
+async function uploadZip (releaseResponse) {
   try {
     console.log("STARTING UPLOAD ASSET")
+    console.log(releaseResponse)
     const filePath = 'latest.zip'
     const fileData = fs.readFileSync(filePath)
 
@@ -39,11 +40,11 @@ async function uploadZip (createReleaseResponse) {
     //const contentLength = filePath => fs.statSync(filePath).size
 
     //const headers = { 'content-type': 'application/zip', 'content-length': contentLength }
-
+    console.log("ABOUT TO UPLOAD")
     const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
       repo: repo,
-      release_id: createReleaseResponse.data.id,
+      release_id: releaseResponse.data.id,
       name: filePath,
       data: fileData
     })
@@ -72,7 +73,7 @@ try {
   shell.exec('git config user.name "Release"')
   shell.exec('git commit -am "release"')
   shell.exec('git archive -o latest.zip HEAD')
-  const uploadResponse = uploadZip()
+  const uploadResponse = uploadZip(releaseResponse)
 
 } catch
   (error) {
