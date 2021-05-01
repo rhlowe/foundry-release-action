@@ -20,6 +20,7 @@ async function createRelease () {
       prerelease: true
     })
 
+    console.log("CREATE RELEASE RESPONSE:")
     console.log(createReleaseResponse)
     return createReleaseResponse
   } catch
@@ -45,6 +46,7 @@ async function addZip (createReleaseResponse) {
       file: data
     })
 
+    console.log("UPLOAD ASSET RESPONSE")
     console.log(uploadAssetResponse)
   } catch
     (error) {
@@ -54,8 +56,8 @@ async function addZip (createReleaseResponse) {
 
 try {
   // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`)
+  //const payload = JSON.stringify(github.context.payload, undefined, 2)
+  //console.log(`The event payload: ${payload}`)
 
   // Replace Data in Manifest
   data = fs.readFileSync('system.json', 'utf8')
@@ -63,8 +65,10 @@ try {
   fs.writeFileSync('system.json', formatted, 'utf8')
 
   const releaseResponse = createRelease()
+  shell.exec('git config user.email "release@release.com"')
+  shell.exec('git config user.name "Release"')
   shell.exec('git commit -am "release"')
-  shell.exec('git archive -o latest.zip')
+  shell.exec('git archive -o latest.zip HEAD')
   const uploadResponse = addZip()
 
 } catch
