@@ -32,12 +32,13 @@ async function createRelease (versionNumber, commitLog) {
 async function getCommitLog () {
   try {
     // Get Last Tag
-    const tagList = await octokit.rest.repos.tags({
+    const releaseList = await octokit.rest.repos.listReleases({
       owner: owner,
       repo: repo,
     })
-    console.log("TAG LIST")
-    console.log(tagList)
+    console.log("RELEASE LIST")
+    console.log(releaseList)
+    return releaseList
   } catch (error) {
     core.setFailed(error.message)
   }
