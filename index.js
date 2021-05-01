@@ -9,8 +9,8 @@ async function createRelease () {
 
   try {
     const createReleaseResponse = await octokit.rest.repos.createRelease({
-      owner: 'foundryvtt-dcc',
-      repo: 'foundry-release-action-testbed',
+      owner: github.context.payload.repository.owner.login,
+      repo: github.context.payload.repository.name,
       tag_name: 'v0.0',
       name: 'test release',
       body: 'test release',
