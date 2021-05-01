@@ -36,15 +36,16 @@ async function uploadZip (createReleaseResponse) {
     const data = fs.readFileSync(filePath)
 
     // Determine content-length for header to upload asset
-    const contentLength = filePath => fs.statSync(filePath).size
+    //const contentLength = filePath => fs.statSync(filePath).size
 
-    const headers = { 'content-type': 'application/zip', 'content-length': contentLength }
+    //const headers = { 'content-type': 'application/zip', 'content-length': contentLength }
 
     const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
-      url: createReleaseResponse.data.upload_url,
-      headers,
+      owner: owner,
+      repo: repo,
+      release_id: createReleaseResponse.data.id,
       name: filePath,
-      file: data
+      data: data
     })
 
     console.log("UPLOAD ASSET RESPONSE")
