@@ -8,6 +8,7 @@ const actionToken = core.getInput('actionToken')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
+const zipName = `${github.context.payload.repository.name}.zip`
 
 async function createRelease () {
   // Create Release
@@ -35,20 +36,14 @@ async function uploadZip (releaseResponse) {
   try {
     console.log('STARTING UPLOAD ASSET')
     console.log(releaseResponse)
-    const filePath = 'latest.zip'
-    const fileData = fs.readFileSync(filePath)
+    const fileData = fs.readFileSync(zipName)
 
-    // Determine content-length for header to upload asset
-    //const contentLength = filePath => fs.statSync(filePath).size
-
-    //const headers = { 'content-type': 'application/zip', 'content-length': contentLength }
-    console.log('ABOUT TO UPLOAD')
     const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
       repo: repo,
       release_id: releaseResponse.data.id,
-      name: filePath,
-      data: fileData
+      name: zipName,
+      data: String(fileData)
     })
 
     console.log('UPLOAD ASSET RESPONSE')
@@ -75,7 +70,7 @@ async function run () {
     shell.exec('git config user.email "release@release.com"')
     shell.exec('git config user.name "Release"')
     shell.exec('git commit -am "release"')
-    shell.exec('git archive -o latest.zip HEAD')
+    shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadZip(releaseResponse)
 
   } catch
