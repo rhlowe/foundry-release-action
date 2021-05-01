@@ -37,18 +37,23 @@ async function getCommitLog () {
       per_page: 1,
       repo: repo,
     })
-    console.log("LAST RELEASE TAG")
+    console.log('LAST RELEASE TAG')
     console.log(releaseList.data[0].tag_name)
     console.log(releaseList.data[0].created_at)
 
     // Get Commits Since That Tag
     const commitList = await octokit.rest.repos.listCommits({
       owner: owner,
+      per_page: 100,
       repo: repo,
       since: releaseList.data[0].created_at,
     })
-    console.log("COMMITS SINCE THAT TAG DATE")
+    console.log('COMMITS SINCE THAT TAG DATE')
     console.log(commitList)
+    commitList.forEach(commit => {
+      console.log(commit.author.name)
+      console.log(commit.commit.message)
+    })
 
     return commitList
   } catch (error) {
