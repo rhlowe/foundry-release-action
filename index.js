@@ -14,14 +14,14 @@ const committer_email = github.context.payload.head_commit.committer.email
 const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
-async function createRelease (versionNumber) {
+async function createRelease (versionNumber, gitLog) {
   try {
     return await octokit.rest.repos.createRelease({
       owner: owner,
       repo: repo,
       tag_name: `${versionNumber}`,
       name: `${versionNumber}`,
-      body: `Release ${versionNumber}`,
+      body: `Release ${versionNumber}\n\n##Release Notes:\n${gitLog}`,
       draft: true,
     })
   } catch (error) {
@@ -76,7 +76,8 @@ async function run () {
     fs.writeFileSync('system.json', formatted, 'utf8')
 
     // Create Release
-    const releaseResponse = await createRelease(versionNumber)
+    const gitLog = await shell.exec('git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %an - %s"')
+    const releaseResponse = await createRelease(versionNumber, gitLog)
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
     await shell.exec(`git commit -am "Release ${versionNumber}"`)
