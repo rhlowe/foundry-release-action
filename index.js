@@ -31,22 +31,18 @@ async function createRelease (versionNumber, commitLog) {
 
 async function getCommitLog () {
   try {
-    // Get Last Tag
-    const releaseList = await octokit.rest.repos.listReleases({
+    // Get Latest Release
+    const latestRelease = await octokit.rest.repos.getLatestRelease({
       owner: owner,
-      per_page: 1,
       repo: repo,
     })
-    console.log('LAST RELEASE TAG')
-    console.log(releaseList.data[0].tag_name)
-    console.log(releaseList.data[0].created_at)
 
-    // Get Commits Since That Tag
+    // Get Commits Since That Release's Date
     const commitList = await octokit.rest.repos.listCommits({
       owner: owner,
       per_page: 100,
       repo: repo,
-      since: releaseList.data[0].created_at,
+      since: latestRelease.created_at,
     })
     console.log('COMMITS SINCE THAT TAG DATE')
     console.log(commitList)
