@@ -4,6 +4,7 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const shell = require('shelljs')
 const fs = require('fs')
+const manifestFileName = core.getInput('manifestFileName')
 const actionToken = core.getInput('actionToken')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
@@ -32,36 +33,43 @@ async function createRelease () {
   }
 }
 
-async function uploadZip (releaseResponse) {
+async function uploadAssets (releaseResponse) {
   try {
     console.log('STARTING UPLOAD ASSET')
-    console.log(releaseResponse)
-    const fileData = await fs.readFileSync(zipName)
 
-    const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
+    const zipData = await fs.readFileSync(zipName)
+    await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
       repo: repo,
       release_id: releaseResponse.data.id,
       name: zipName,
-      data: fileData
+      data: zipData
+    })
+
+    const manifestData = await fs.readFileSync(manifestFileName, 'utf-8')
+    const uploadManifestResponse = await octokit.rest.repos.uploadReleaseAsset({
+      owner: owner,
+      repo: repo,
+      release_id: releaseResponse.data.id,
+      name: manifestFileName,
+      data: manifestData
     })
 
     console.log('UPLOAD ASSET RESPONSE')
-    console.log(uploadAssetResponse)
-  } catch
-    (error) {
+    console.log(uploadManifestResponse)
+  } catch (error) {
     core.setFailed(error.message)
   }
 }
 
 async function run () {
   try {
-    // Get the JSON webhook payload for the event that triggered the workflow
-    //const payload = JSON.stringify(github.context.payload, undefined, 2)
-    //console.log(`The event payload: ${payload}`)
+    // Validate manifestFileName
+    if (manifestFileName !== 'system.json' || manifestFileName !== 'module.json')
+      core.setFailed('manifestFileName must be system.json or module.json')
 
     // Replace Data in Manifest
-    const data = fs.readFileSync('system.json', 'utf8')
+    const data = fs.readFileSync(manifestFileName, 'utf8')
     const formatted = data.replace(/{{VERSION}}/g, '0.1')
     fs.writeFileSync('system.json', formatted, 'utf8')
 
@@ -71,10 +79,9 @@ async function run () {
     await shell.exec('git config user.name "Release"')
     await shell.exec('git commit -am "release"')
     await shell.exec(`git archive -o ${zipName} HEAD`)
-    await uploadZip(releaseResponse)
+    await uploadAssets(releaseResponse)
 
-  } catch
-    (error) {
+  } catch (error) {
     core.setFailed(error.message)
   }
 }

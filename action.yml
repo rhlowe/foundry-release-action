@@ -5,6 +5,10 @@ inputs:
     description: 'Github Token'
     required: true
     default: 'World'
+  manifestFileName:
+    description: 'Name of the Foundry Manifest File, either system.json or module.json'
+    required: true
+    default: 'module.json'
 runs:
   using: 'node12'
   main: 'index.js'
