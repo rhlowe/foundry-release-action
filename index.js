@@ -98,7 +98,7 @@ async function run () {
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/system.json`
     const formatted = data
       .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
-      .replace(/"download": .*,/i, `"download": ${downloadURL}",`)
+      .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
       .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
     fs.writeFileSync('system.json', formatted, 'utf8')
 
