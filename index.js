@@ -51,7 +51,7 @@ async function getCommitLog () {
       commitListMarkdown += (`* ${commit.commit.committer.name} - ${commit.commit.message}\n`)
     })
 
-    return commitList
+    return commitListMarkdown
   } catch (error) {
     core.setFailed(error.message)
   }
