@@ -37,11 +37,20 @@ async function getCommitLog () {
       per_page: 1,
       repo: repo,
     })
-    console.log("RELEASE LIST")
-    console.log(releaseList)
     console.log("LAST RELEASE TAG")
     console.log(releaseList.data[0].tag_name)
-    return releaseList
+    console.log(releaseList.data[0].created_at)
+
+    // Get Commits Since That Tag
+    const commitList = await octokit.rest.repos.listCommits({
+      owner: owner,
+      repo: repo,
+      since: releaseList.data[0].created_at,
+    })
+    console.log("COMMITS SINCE THAT TAG DATE")
+    console.log(commitList)
+
+    return commitList
   } catch (error) {
     core.setFailed(error.message)
   }
