@@ -47,7 +47,7 @@ async function getCommitLog () {
     })
     let commitListMarkdown = ""
     commitList.data.forEach(commit => {
-      commitListMarkdown += (`* ${commit.commit.committer.name} - ${commit.commit.message}\n`)
+      commitListMarkdown += (`* ${commit.commit.author.name} - ${commit.commit.message}\n`)
     })
 
     return commitListMarkdown
