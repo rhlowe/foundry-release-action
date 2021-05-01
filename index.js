@@ -60,10 +60,13 @@ try {
   //console.log(`The event payload: ${payload}`)
 
   // Replace Data in Manifest
+  console.log("ABOUT TO REPLACE")
   data = fs.readFileSync('system.json', 'utf8')
   let formatted = data.replace(/{{VERSION}}/g, '0.1')
   fs.writeFileSync('system.json', formatted, 'utf8')
+  console.log("AFTER REPLACE")
 
+  // Create Release
   const releaseResponse = createRelease()
   shell.exec('git config user.email "release@release.com"')
   shell.exec('git config user.name "Release"')
