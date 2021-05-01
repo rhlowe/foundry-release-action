@@ -4,24 +4,26 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const shell = require('shelljs')
 const fs = require('fs')
+
 const manifestFileName = core.getInput('manifestFileName')
 const actionToken = core.getInput('actionToken')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
+const committer_email = github.context.payload.head_commit.committer.email
+const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
-async function createRelease () {
+async function createRelease (versionNumber) {
   // Create Release
   try {
     const createReleaseResponse = await octokit.rest.repos.createRelease({
       owner: owner,
       repo: repo,
-      tag_name: 'v0.0',
-      name: `test release ${Date.now()}`,
-      body: 'test release',
+      tag_name: `v${versionNumber}`,
+      name: `v${versionNumber} ${Date.now()}`,
+      body: 'Release v${versionNumber}',
       draft: true,
-      prerelease: true
     })
 
     console.log('CREATE RELEASE RESPONSE:')
@@ -68,16 +70,23 @@ async function run () {
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
+    const versionNumber = await fs.readFileSync('version.txt')
+
     // Replace Data in Manifest
     const data = fs.readFileSync(manifestFileName, 'utf8')
-    const formatted = data.replace(/{{VERSION}}/g, '0.1')
+    const downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
+    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/system.json`
+    const formatted = data
+      .replace(/{{VERSION}}/g, versionNumber)
+      .replace(/{{DOWNLOAD_URL}}/g, downloadURL)
+      .replace(/{{MANIFEST_URL}}/g, manifestURL)
     fs.writeFileSync('system.json', formatted, 'utf8')
 
     // Create Release
-    const releaseResponse = await createRelease()
-    await shell.exec('git config user.email "release@release.com"')
-    await shell.exec('git config user.name "Release"')
-    await shell.exec('git commit -am "release"')
+    const releaseResponse = await createRelease(versionNumber)
+    await shell.exec(`git config user.email "${committer_email}"`)
+    await shell.exec(`git config user.name "${committer_username}"`)
+    await shell.exec(`git commit -am "Release ${versionNumber}"`)
     await shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadAssets(releaseResponse)
 

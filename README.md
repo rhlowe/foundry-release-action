@@ -1,16 +1,30 @@
 # GitHub Action to Release Code for Foundry Systems and Modules
 
-This github action seeks to enable a simple release process where you just tag your code with 'vxx.xx.xx', and this action does the rest.
+This GitHub Action enables you to release a Foundry VTT System or Module by simply updating the 'version.txt' file in your main branch.
 
-The steps are:
+Example workflow:
 
-* Create a release branch
-* Perform version substitution on the system.json or manifest.json
-* Create a release
-* Output the URL to the manifest for copy/paste into the Foundry admin interface
+```
+on:
+  push:
+    paths:
+      - 'version.txt'
 
+jobs:
+  create_foundry_release:
+    runs-on: ubuntu-latest
+    name: Foundry Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Foundry Release
+        id: foundry-release
+        uses: foundryvtt-dcc/foundry-release-action@main
+        with:
+          actionToken: ${{ secrets.GITHUB_TOKEN }}
+          manifestFileName: 'system.json'
+```
 
-Goals:
-* Don't have extraneous files in the release
-* Don't have extraneous files in the zip
-* Perhaps do a pre-release in the automated process?
+For `manifestFileName` you will either supply `system.json` or `module.json` depending on your project.
+
+You should not need to change `actionToken` from the example above.
