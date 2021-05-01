@@ -62,7 +62,7 @@ async function run () {
       core.setFailed('manifestFileName must be system.json or module.json')
 
     // Get versionNumber
-    const versionNumber = await fs.readFileSync('version.txt')
+    const versionNumber = await fs.readFileSync('version.txt').trim()
 
     // Replace Data in Manifest
     const data = fs.readFileSync(manifestFileName, 'utf8')
