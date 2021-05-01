@@ -97,9 +97,9 @@ async function run () {
     const downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
     const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/system.json`
     const formatted = data
-      .replace(/{{VERSION}}/g, versionNumber.replace('v', ''))
-      .replace(/{{DOWNLOAD_URL}}/g, downloadURL)
-      .replace(/{{MANIFEST_URL}}/g, manifestURL)
+      .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
+      .replace(/"download": .*,/i, `"download": ${downloadURL}",`)
+      .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
     fs.writeFileSync('system.json', formatted, 'utf8')
 
     // Git List of Commits Since Last Release
