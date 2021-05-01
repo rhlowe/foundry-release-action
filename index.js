@@ -33,7 +33,7 @@ async function uploadZip (createReleaseResponse) {
   try {
     console.log("STARTING UPLOAD ASSET")
     const filePath = 'latest.zip'
-    const data = fs.readFileSync(filePath)
+    const fileData = fs.readFileSync(filePath)
 
     // Determine content-length for header to upload asset
     //const contentLength = filePath => fs.statSync(filePath).size
@@ -45,7 +45,7 @@ async function uploadZip (createReleaseResponse) {
       repo: repo,
       release_id: createReleaseResponse.data.id,
       name: filePath,
-      data: data
+      data: fileData
     })
 
     console.log("UPLOAD ASSET RESPONSE")
@@ -62,8 +62,8 @@ try {
   //console.log(`The event payload: ${payload}`)
 
   // Replace Data in Manifest
-  data = fs.readFileSync('system.json', 'utf8')
-  let formatted = data.replace(/{{VERSION}}/g, '0.1')
+  const data = fs.readFileSync('system.json', 'utf8')
+  const formatted = data.replace(/{{VERSION}}/g, '0.1')
   fs.writeFileSync('system.json', formatted, 'utf8')
 
   // Create Release
