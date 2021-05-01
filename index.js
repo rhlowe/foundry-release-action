@@ -78,6 +78,8 @@ async function run () {
     // Create Release
     let gitLog = await shell.exec('git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %an - %s"')
     gitLog = gitLog.stdout
+    console.log("GIT LOG")
+    console.log(gitLog)
     const releaseResponse = await createRelease(versionNumber, gitLog)
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
