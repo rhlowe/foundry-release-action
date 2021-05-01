@@ -7,17 +7,22 @@ async function createRelease () {
   const actionToken = core.getInput('actionToken')
   const octokit = github.getOctokit(actionToken)
 
-  const createReleaseResponse = await octokit.rest.repos.createRelease({
-    owner: 'cyface',
-    repo: 'foundryvtt-dcc/foundry-release-action-testbed',
-    tag_name: 'v0.0',
-    name: 'test release',
-    body: 'test release',
-    draft: true,
-    prerelease: true
-  })
+  try {
+    const createReleaseResponse = await octokit.rest.repos.createRelease({
+      owner: 'foundryvtt-dcc',
+      repo: 'foundry-release-action-testbed',
+      tag_name: 'v0.0',
+      name: 'test release',
+      body: 'test release',
+      draft: true,
+      prerelease: true
+    })
 
-  console.log(createReleaseResponse)
+    console.log(createReleaseResponse)
+  } catch
+    (error) {
+    core.setFailed(error.message)
+  }
 }
 
 try {
