@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
+
 const core = require('@actions/core')
 const github = require('@actions/github')
 const shell = require('shelljs')
@@ -20,7 +22,7 @@ async function createRelease () {
       prerelease: true
     })
 
-    console.log("CREATE RELEASE RESPONSE:")
+    console.log('CREATE RELEASE RESPONSE:')
     console.log(createReleaseResponse)
     return createReleaseResponse
   } catch
@@ -31,7 +33,7 @@ async function createRelease () {
 
 async function uploadZip (releaseResponse) {
   try {
-    console.log("STARTING UPLOAD ASSET")
+    console.log('STARTING UPLOAD ASSET')
     console.log(releaseResponse)
     const filePath = 'latest.zip'
     const fileData = fs.readFileSync(filePath)
@@ -40,7 +42,7 @@ async function uploadZip (releaseResponse) {
     //const contentLength = filePath => fs.statSync(filePath).size
 
     //const headers = { 'content-type': 'application/zip', 'content-length': contentLength }
-    console.log("ABOUT TO UPLOAD")
+    console.log('ABOUT TO UPLOAD')
     const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
       repo: repo,
@@ -49,7 +51,7 @@ async function uploadZip (releaseResponse) {
       data: fileData
     })
 
-    console.log("UPLOAD ASSET RESPONSE")
+    console.log('UPLOAD ASSET RESPONSE')
     console.log(uploadAssetResponse)
   } catch
     (error) {
@@ -57,25 +59,29 @@ async function uploadZip (releaseResponse) {
   }
 }
 
-try {
-  // Get the JSON webhook payload for the event that triggered the workflow
-  //const payload = JSON.stringify(github.context.payload, undefined, 2)
-  //console.log(`The event payload: ${payload}`)
+async function run () {
+  try {
+    // Get the JSON webhook payload for the event that triggered the workflow
+    //const payload = JSON.stringify(github.context.payload, undefined, 2)
+    //console.log(`The event payload: ${payload}`)
 
-  // Replace Data in Manifest
-  const data = fs.readFileSync('system.json', 'utf8')
-  const formatted = data.replace(/{{VERSION}}/g, '0.1')
-  fs.writeFileSync('system.json', formatted, 'utf8')
+    // Replace Data in Manifest
+    const data = fs.readFileSync('system.json', 'utf8')
+    const formatted = data.replace(/{{VERSION}}/g, '0.1')
+    fs.writeFileSync('system.json', formatted, 'utf8')
 
-  // Create Release
-  const releaseResponse = createRelease()
-  shell.exec('git config user.email "release@release.com"')
-  shell.exec('git config user.name "Release"')
-  shell.exec('git commit -am "release"')
-  shell.exec('git archive -o latest.zip HEAD')
-  const uploadResponse = uploadZip(releaseResponse)
+    // Create Release
+    const releaseResponse = await createRelease()
+    shell.exec('git config user.email "release@release.com"')
+    shell.exec('git config user.name "Release"')
+    shell.exec('git commit -am "release"')
+    shell.exec('git archive -o latest.zip HEAD')
+    await uploadZip(releaseResponse)
 
-} catch
-  (error) {
-  core.setFailed(error.message)
+  } catch
+    (error) {
+    core.setFailed(error.message)
+  }
 }
+
+run()
