@@ -14,16 +14,30 @@ const committer_email = github.context.payload.head_commit.committer.email
 const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
-async function createRelease (versionNumber, gitLog) {
+async function createRelease (versionNumber, commitLog) {
   try {
     return await octokit.rest.repos.createRelease({
       owner: owner,
       repo: repo,
       tag_name: `${versionNumber}`,
       name: `${versionNumber}`,
-      body: `Release ${versionNumber}\n\n## Release Notes:\n${gitLog}`,
+      body: `Release ${versionNumber}\n\n## Release Notes:\n${commitLog}`,
       draft: true,
     })
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+}
+
+async function getCommitLog () {
+  try {
+    // Get Last Tag
+    const tagList = await octokit.rest.repos.tags({
+      owner: owner,
+      repo: repo,
+    })
+    console.log("TAG LIST")
+    console.log(tagList)
   } catch (error) {
     core.setFailed(error.message)
   }
@@ -75,12 +89,11 @@ async function run () {
       .replace(/{{MANIFEST_URL}}/g, manifestURL)
     fs.writeFileSync('system.json', formatted, 'utf8')
 
+    // Git List of Commits Since Last Release
+    const commitLog = await getCommitLog()
+
     // Create Release
-    let gitLog = await shell.exec('git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %an - %s"')
-    gitLog = gitLog.stdout
-    console.log("GIT LOG")
-    console.log(gitLog)
-    const releaseResponse = await createRelease(versionNumber, gitLog)
+    const releaseResponse = await createRelease(versionNumber, commitLog)
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
     await shell.exec(`git commit -am "Release ${versionNumber}"`)
