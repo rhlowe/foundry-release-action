@@ -9,6 +9,9 @@ inputs:
     description: 'Name of the Foundry Manifest File, either system.json or module.json'
     required: true
     default: 'module.json'
+  manifestSecureTrue:
+    description: 'Set to true to set secure: true in the manifest during the release'
+    required: false
 runs:
   using: 'node12'
   main: 'index.js'
