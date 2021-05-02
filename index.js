@@ -37,7 +37,6 @@ async function getCommitLog () {
       owner: owner,
       repo: repo,
     })
-    console.log(latestRelease)
 
     // Get Commits Since That Release's Date
     const commitList = await octokit.rest.repos.listCommits({
@@ -92,10 +91,6 @@ async function run () {
 
     // Set up secure manifest setting
     const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'
-    console.log("MANIFEST PROTECTED VALUE RAW")
-    console.log(manifestProtectedTrue)
-    console.log("MANIFEST PROTECTED VALUE COOKED")
-    console.log(manifestProtectedValue)
 
     // Get versionNumber from version.txt
     let versionNumber = await fs.readFileSync('version.txt', 'utf-8')
