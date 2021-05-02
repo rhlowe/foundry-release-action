@@ -89,17 +89,25 @@ async function run () {
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
-    // Set up secure manifest setting
-    const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'
-
     // Get versionNumber from version.txt
     let versionNumber = await fs.readFileSync('version.txt', 'utf-8')
     versionNumber = `v${versionNumber.trim()}`
 
+    // Set up Download URLs
+    let downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
+    let manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`
+    let manifestProtectedValue = 'false'
+    if (manifestProtectedTrue) {
+      downloadURL = ""
+      manifestURL = `https://raw.githubusercontent.com/${owner}/dcc-content/main/${repo}/${versionNumber}/${manifestFileName}`
+      manifestProtectedValue = 'true'
+    }
+
+
     // Replace Data in Manifest
     const data = fs.readFileSync(manifestFileName, 'utf8')
-    const downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
-    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`
+
+
     const formatted = data
       .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
       .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
