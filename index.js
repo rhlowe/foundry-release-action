@@ -104,13 +104,13 @@ async function run () {
     // Replace Data in Manifest
     const data = fs.readFileSync(manifestFileName, 'utf8')
     const downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
-    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/system.json`
+    const manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`
     const formatted = data
       .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
       .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
       .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
       .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
-    fs.writeFileSync('system.json', formatted, 'utf8')
+    fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Git List of Commits Since Last Release
     const commitLog = await getCommitLog()
