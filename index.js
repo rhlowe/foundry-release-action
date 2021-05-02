@@ -7,7 +7,7 @@ const fs = require('fs')
 
 const actionToken = core.getInput('actionToken')
 const manifestFileName = core.getInput('manifestFileName')
-const manifestSecureTrue = core.getInput('manifestSecureTrue')
+const manifestProtectedTrue = core.getInput('manifestProtectedTrue')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
@@ -91,7 +91,7 @@ async function run () {
       core.setFailed('manifestFileName must be system.json or module.json')
 
     // Set up secure manifest setting
-    const manifestSecureValue = 'true' ? manifestSecureTrue : 'false'
+    const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'
 
     // Get versionNumber from version.txt
     let versionNumber = await fs.readFileSync('version.txt', 'utf-8')
@@ -105,7 +105,7 @@ async function run () {
       .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
       .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
       .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
-      .replace(/"secure": .*,/i, `"secure": ${manifestSecureValue},`)
+      .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
     fs.writeFileSync('system.json', formatted, 'utf8')
 
     // Git List of Commits Since Last Release
