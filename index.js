@@ -92,6 +92,10 @@ async function run () {
 
     // Set up secure manifest setting
     const manifestProtectedValue = 'true' ? manifestProtectedTrue : 'false'
+    console.log("MANIFEST PROTECTED VALUE RAW")
+    console.log(manifestProtectedTrue)
+    console.log("MANIFEST PROTECTED VALUE COOKED")
+    console.log(manifestProtectedValue)
 
     // Get versionNumber from version.txt
     let versionNumber = await fs.readFileSync('version.txt', 'utf-8')

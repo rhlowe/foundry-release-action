@@ -12,6 +12,7 @@ inputs:
   manifestProtectedTrue:
     description: 'Set to true to set protected: true in the manifest during the release'
     required: false
+    default: 'false'
 runs:
   using: 'node12'
   main: 'index.js'
