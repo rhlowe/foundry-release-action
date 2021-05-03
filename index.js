@@ -47,7 +47,7 @@ async function getCommitLog () {
       since: latestRelease.data.created_at,
     })
     let commitListMarkdown = ""
-    commitList.data.filter(v => v.commit.message.includes('bot') === false).forEach(commit => {
+    commitList.data.filter(v => v.commit.author.name.includes('bot') === false).forEach(commit => {
       commitListMarkdown += (`* ${commit.commit.message} (${commit.commit.author.name})\n`)
     })
 
