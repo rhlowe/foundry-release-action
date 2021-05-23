@@ -97,7 +97,7 @@ async function run () {
     let downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`
     let manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`
     let manifestProtectedValue = 'false'
-    if (manifestProtectedTrue !== 'false') {
+    if (manifestProtectedTrue === 'true') {
       downloadURL = ""
       manifestURL = `https://raw.githubusercontent.com/${owner}/dcc-content/main/${repo}/${versionNumber}/${manifestFileName}`
       manifestProtectedValue = 'true'
