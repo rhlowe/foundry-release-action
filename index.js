@@ -56,6 +56,7 @@ async function getCommitLog () {
     return commitListMarkdown
   } catch (error) {
     core.setFailed(error.message)
+    console.log(error)
   }
 }
 
