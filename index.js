@@ -105,6 +105,9 @@ async function run () {
 
 
     // Replace Data in Manifest
+    fs.readdirSync(".").forEach(file => {
+      console.log(file);
+    });
     const data = fs.readFileSync(manifestFileName, 'utf8')
 
 
