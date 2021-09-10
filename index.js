@@ -40,6 +40,7 @@ async function getCommitLog () {
     })
 
     // Get Commits Since That Release's Date
+    console.log(`Get Latest Commits for ${owner}/${repo}`)
     const commitList = await octokit.rest.repos.listCommits({
       owner: owner,
       per_page: 100,
