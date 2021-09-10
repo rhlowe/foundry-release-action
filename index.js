@@ -119,9 +119,11 @@ async function run () {
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Git List of Commits Since Last Release
+    console.log("Get Commit Log")
     const commitLog = await getCommitLog()
 
     // Create Release
+    console.log("Create Release")
     const releaseResponse = await createRelease(versionNumber, commitLog)
     await shell.exec(`git config user.email "${committer_email}"`)
     await shell.exec(`git config user.name "${committer_username}"`)
