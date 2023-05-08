@@ -32,7 +32,7 @@ async function createRelease (versionNumber, commitLog) {
 
 async function getCommitLog () {
   try {
-    // Get Latest Release
+    // Get The Latest Release
     console.log(`Get Latest Release for ${owner}/${repo}`)
     const latestRelease = await octokit.rest.repos.getLatestRelease({
       owner: owner,
