@@ -1,6 +1,6 @@
 {
   "name": "foundry-release-action",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "GitHub Action to Release Foundry VTT Systems and Modules",
   "main": "index.js",
   "repository": {
@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/foundryvtt-dcc/foundry-release-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.7",
-    "@actions/github": "^4.0.0",
-    "shelljs": "^0.8.4"
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "shelljs": "^0.8.5"
   }
 }
