@@ -1,4 +1,4 @@
-# GitHub Action to Create GitHUb Release for Foundry Systems and Modules
+# GitHub Action to Create GitHub Release for Foundry Systems and Modules
 
 This GitHub Action enables you to create a GitHub Release for a Foundry VTT System or Module by simply updating the 'version.txt' file in your main branch.
 
