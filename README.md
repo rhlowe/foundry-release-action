@@ -13,6 +13,8 @@ name: Create Foundry Release
 
 on:
   push:
+    tags-ignore:
+      - '**'
     paths:
       - 'version.txt'
 
