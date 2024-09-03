@@ -9,7 +9,7 @@ Create a folder named `.github` at the root of your workflow, and inside that fo
 In the `workflows` folder, create a file named `foundry_release.yml` with this content:
 
 ```
-name: Create Foundry Release
+name: Create GitHub Release
 
 on:
   push:
