@@ -15,7 +15,7 @@ const committer_email = github.context.payload.head_commit.committer.email
 const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
-async function createRelease (versionNumber, commitLog) {
+async function createRelease(versionNumber, commitLog) {
   try {
     return await octokit.rest.repos.createRelease({
       owner: owner,
@@ -30,7 +30,7 @@ async function createRelease (versionNumber, commitLog) {
   }
 }
 
-async function getCommitLog () {
+async function getCommitLog() {
   try {
     // Get The Latest Release
     console.log(`Get Latest Release for ${owner}/${repo}`)
@@ -49,9 +49,15 @@ async function getCommitLog () {
       since: latestRelease.data.created_at,
     })
     let commitListMarkdown = ""
-    commitList.data.filter(v => v.commit.author.name.includes('bot') === false).forEach(commit => {
-      commitListMarkdown += (`* ${commit.commit.message} (${commit.commit.author.name})\n`)
-    })
+    commitList.data
+            .filter(
+                    (commit) =>
+                            !commit.commit.author.name.includes("bot") &&
+                            !commit.commit.message.includes("version.txt")
+            )
+            .forEach((commit) => {
+              commitListMarkdown += `* ${commit.commit.message} (${commit.commit.author.name})\n`;
+            })
 
     return commitListMarkdown
   } catch (error) {
@@ -60,7 +66,7 @@ async function getCommitLog () {
   }
 }
 
-async function uploadAssets (releaseResponse) {
+async function uploadAssets(releaseResponse) {
   try {
     // Upload Zip
     const zipData = await fs.readFileSync(zipName)
@@ -86,7 +92,7 @@ async function uploadAssets (releaseResponse) {
   }
 }
 
-async function run () {
+async function run() {
   try {
     // Validate manifestFileName
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
@@ -115,10 +121,10 @@ async function run () {
 
 
     const formatted = data
-      .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
-      .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
-      .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
-      .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
+            .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
+            .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
+            .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
+            .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Git List of Commits Since Last Release
