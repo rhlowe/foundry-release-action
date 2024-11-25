@@ -24,7 +24,7 @@ jobs:
     name: Foundry Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Foundry Release
         id: foundry-release
         uses: foundryvtt-dcc/foundry-release-action@main
