@@ -4,6 +4,7 @@ const core = require('@actions/core')
 const fs = require('fs')
 const github = require('@actions/github')
 const shell = require('shelljs')
+const fvtt = require('@foundryvtt/foundryvtt-cli')
 
 const actionToken = core.getInput('actionToken')
 const manifestFileName = core.getInput('manifestFileName')
@@ -29,7 +30,7 @@ async function compilePacks () {
       const packName = pack.name
       if (packName) {
         // Compile the JSON file to LevelDB
-        await compilePack(`packs/${packName}/src`, `packs/${packName}`)
+        await fvtt.compilePack(`packs/${packName}/src`, `packs/${packName}`)
       }
     }
   } catch (err) {
