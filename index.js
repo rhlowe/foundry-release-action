@@ -1,9 +1,11 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
+const cache = require('@actions/cache')
 const core = require('@actions/core')
+const exec = require('@actions/exec')
+const fs = require('fs')
 const github = require('@actions/github')
 const shell = require('shelljs')
-const fs = require('fs')
 
 const actionToken = core.getInput('actionToken')
 const manifestFileName = core.getInput('manifestFileName')
@@ -15,11 +17,10 @@ const committer_email = github.context.payload.head_commit.committer.email
 const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
-
-async function compilePacks() {
+async function compilePacks () {
   try {
     // Load and parse module.json
-    const data = await fs.readFile(manifestFileName, 'utf-8')
+    const data = fs.readFileSync(manifestFileName, 'utf-8')
     const manifestJson = JSON.parse(data)
 
     // Get the packs from the module
@@ -38,7 +39,7 @@ async function compilePacks() {
   }
 }
 
-async function createRelease(versionNumber, commitLog) {
+async function createRelease (versionNumber, commitLog) {
   try {
     return await octokit.rest.repos.createRelease({
       owner: owner,
@@ -53,7 +54,7 @@ async function createRelease(versionNumber, commitLog) {
   }
 }
 
-async function getCommitLog() {
+async function getCommitLog () {
   try {
     // Get The Latest Release
     console.log(`Get Latest Release for ${owner}/${repo}`)
@@ -71,7 +72,7 @@ async function getCommitLog() {
       sha: 'main',
       since: latestRelease.data.created_at,
     })
-    let commitListMarkdown = ""
+    let commitListMarkdown = ''
     commitList.data
             .filter(
                     (commit) =>
@@ -79,7 +80,7 @@ async function getCommitLog() {
                             !commit.commit.message.includes('version.txt')
             )
             .forEach((commit) => {
-              commitListMarkdown += `* ${commit.commit.message} (${commit.commit.author.name})\n`;
+              commitListMarkdown += `* ${commit.commit.message} (${commit.commit.author.name})\n`
             })
 
     return commitListMarkdown
@@ -89,7 +90,42 @@ async function getCommitLog() {
   }
 }
 
-async function uploadAssets(releaseResponse) {
+async function installNodeModules () {
+  try {
+    const packageLockFile = 'package-lock.json'
+    // Check if package-lock.json exists
+    if (!fs.existsSync(packageLockFile)) {
+      core.setFailed(`File not found: ${packageLockFile}`)
+      return
+    }
+
+    // Compute SHA256 hash of package-lock.json
+    const fileContent = fs.readFileSync(packageLockFile, 'utf-8')
+    const hash = crypto.createHash('sha256').update(fileContent).digest('hex')
+    const cacheKey = `node-modules-${hash}`
+    const cachePath = 'node_modules'
+
+    // Attempt to restore cache
+    const cacheHit = await cache.restoreCache([cachePath], cacheKey)
+    if (cacheHit) {
+      core.info(`Cache hit for key: ${cacheHit}`)
+    } else {
+      core.info(`No cache found, installing dependencies...`)
+    }
+
+    // Install dependencies if cache is not found
+    if (!cacheHit) {
+      await exec.exec('npm ci --production')
+      await cache.saveCache([cachePath], cacheKey)
+    }
+
+    core.setOutput('success', 'true')
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+}
+
+async function uploadAssets (releaseResponse) {
   try {
     // Upload Zip
     const zipData = await fs.readFileSync(zipName)
@@ -115,11 +151,15 @@ async function uploadAssets(releaseResponse) {
   }
 }
 
-async function run() {
+async function run () {
   try {
     // Validate manifestFileName
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
+
+    // Install Node Modules
+    console.log('Install Node Modules')
+    await installNodeModules()
 
     // Get versionNumber from version.txt
     let versionNumber = await fs.readFileSync('version.txt', 'utf-8')
@@ -130,18 +170,16 @@ async function run() {
     let manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`
     let manifestProtectedValue = 'false'
     if (manifestProtectedTrue === 'true') {
-      downloadURL = ""
+      downloadURL = ''
       manifestURL = `https://raw.githubusercontent.com/${owner}/dcc-content/main/${repo}/${versionNumber}/${manifestFileName}`
       manifestProtectedValue = 'true'
     }
 
-
     // Replace Data in Manifest
     fs.readdirSync('.').forEach(file => {
-      console.log(file);
-    });
+      console.log(file)
+    })
     const data = fs.readFileSync(manifestFileName, 'utf8')
-
 
     const formatted = data
             .replace(/'version': .*,/i, `'version': '${versionNumber.replace('v', '')}',`)
