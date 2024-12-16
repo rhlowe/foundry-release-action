@@ -31,8 +31,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-        cache: 'npm'
-        - run npm ci --omit=dev
+          cache: 'npm'
+        - run: npm ci --omit=dev
       - name: Create GitHub Release
         id: github-release
         uses: foundryvtt-dcc/foundry-release-action@main
