@@ -10,6 +10,7 @@ const shell = require('shelljs')
 const actionToken = core.getInput('actionToken')
 const manifestFileName = core.getInput('manifestFileName')
 const manifestProtectedTrue = core.getInput('manifestProtectedTrue')
+const packageLockFile = core.getInput('packageLockFile')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
@@ -92,12 +93,14 @@ async function getCommitLog () {
 
 async function installNodeModules () {
   try {
-    const packageLockFile = 'package-lock.json'
     // Check if package-lock.json exists
     if (!fs.existsSync(packageLockFile)) {
       core.setFailed(`File not found: ${packageLockFile}`)
       return
     }
+
+    // Install @actions/cache
+    await exec.exec('npm install @actions/cache')
 
     // Compute SHA256 hash of package-lock.json
     const fileContent = fs.readFileSync(packageLockFile, 'utf-8')

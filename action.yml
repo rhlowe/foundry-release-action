@@ -13,6 +13,10 @@ inputs:
     description: 'Set to true to set protected: true in the manifest during the release'
     required: false
     default: 'false'
+  packageLockFile:
+    description: 'Name of the package-lock.json file'
+    required: false
+    default: 'package-lock.json'
 runs:
   using: 'node20'
   main: 'index.js'
