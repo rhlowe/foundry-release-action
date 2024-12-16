@@ -24,18 +24,16 @@ async function compilePacks () {
 
     // Get the packs from the module
     const packs = manifestJson.packs || []
-    console.log(packs)
 
     // Process each pack
     for (const pack of packs) {
       const packName = pack.name
-      console.log(packName)
       if (packName) {
         // Compile the JSON file to LevelDB
         await fvtt.compilePack(`packs/${packName}/src`, `packs/${packName}`)
       }
     }
-    console.log(shell.exec('ls packs'))
+    await shell.exec(`git add -f packs/*`)
   } catch (err) {
     console.error('Error processing packs:', err)
   }
@@ -165,7 +163,7 @@ async function run () {
     await shell.exec(`git config user.email '${committer_email}'`)
     await shell.exec(`git config user.name '${committer_username}'`)
     await shell.exec(`git commit -am 'Release ${versionNumber}'`)
-    await shell.exec(`git archive -o -u ${zipName} HEAD`)
+    await shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadAssets(releaseResponse)
 
     // Log Results
