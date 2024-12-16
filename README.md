@@ -27,12 +27,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-        - run: npm ci --omit=dev
       - name: Create GitHub Release
         id: github-release
         uses: foundryvtt-dcc/foundry-release-action@main
