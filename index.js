@@ -1,8 +1,6 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
-const cache = require('@actions/cache')
 const core = require('@actions/core')
-const exec = require('@actions/exec')
 const fs = require('fs')
 const github = require('@actions/github')
 const shell = require('shelljs')
@@ -10,7 +8,6 @@ const shell = require('shelljs')
 const actionToken = core.getInput('actionToken')
 const manifestFileName = core.getInput('manifestFileName')
 const manifestProtectedTrue = core.getInput('manifestProtectedTrue')
-const packageLockFile = core.getInput('packageLockFile')
 const octokit = github.getOctokit(actionToken)
 const owner = github.context.payload.repository.owner.login
 const repo = github.context.payload.repository.name
@@ -91,43 +88,6 @@ async function getCommitLog () {
   }
 }
 
-async function installNodeModules () {
-  try {
-    // Check if package-lock.json exists
-    if (!fs.existsSync(packageLockFile)) {
-      core.setFailed(`File not found: ${packageLockFile}`)
-      return
-    }
-
-    // Install @actions/cache
-    await exec.exec('npm install @actions/cache')
-
-    // Compute SHA256 hash of package-lock.json
-    const fileContent = fs.readFileSync(packageLockFile, 'utf-8')
-    const hash = crypto.createHash('sha256').update(fileContent).digest('hex')
-    const cacheKey = `node-modules-${hash}`
-    const cachePath = 'node_modules'
-
-    // Attempt to restore cache
-    const cacheHit = await cache.restoreCache([cachePath], cacheKey)
-    if (cacheHit) {
-      core.info(`Cache hit for key: ${cacheHit}`)
-    } else {
-      core.info(`No cache found, installing dependencies...`)
-    }
-
-    // Install dependencies if cache is not found
-    if (!cacheHit) {
-      await exec.exec('npm ci --production')
-      await cache.saveCache([cachePath], cacheKey)
-    }
-
-    core.setOutput('success', 'true')
-  } catch (error) {
-    core.setFailed(error.message)
-  }
-}
-
 async function uploadAssets (releaseResponse) {
   try {
     // Upload Zip
@@ -141,7 +101,7 @@ async function uploadAssets (releaseResponse) {
     })
 
     // Upload Manifest
-    const manifestData = await fs.readFileSync(manifestFileName, 'utf-8')
+    const manifestData = fs.readFileSync(manifestFileName, 'utf-8')
     await octokit.rest.repos.uploadReleaseAsset({
       owner: owner,
       repo: repo,
@@ -160,12 +120,8 @@ async function run () {
     if (manifestFileName !== 'system.json' && manifestFileName !== 'module.json')
       core.setFailed('manifestFileName must be system.json or module.json')
 
-    // Install Node Modules
-    console.log('Install Node Modules')
-    await installNodeModules()
-
     // Get versionNumber from version.txt
-    let versionNumber = await fs.readFileSync('version.txt', 'utf-8')
+    let versionNumber = fs.readFileSync('version.txt', 'utf-8')
     versionNumber = `v${versionNumber.trim()}`
 
     // Set up Download URLs

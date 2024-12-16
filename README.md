@@ -13,6 +13,8 @@ name: Create GitHub Release
 
 on:
   push:
+    branches:
+      - 'main'
     tags-ignore:
       - '**'
     paths:
@@ -25,12 +27,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Foundry Release
-        id: foundry-release
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+        cache: 'npm'
+        - run npm ci --omit=dev
+      - name: Create GitHub Release
+        id: github-release
         uses: foundryvtt-dcc/foundry-release-action@main
         with:
           actionToken: ${{ secrets.GITHUB_TOKEN }}
-          manifestFileName: 'system.json'
+          manifestFileName: 'module.json'
+          manifestProtectedTrue: true
 ```
 
 For `manifestFileName` you will either enter `system.json` or `module.json` depending on your project.
