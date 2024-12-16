@@ -24,10 +24,12 @@ async function compilePacks () {
 
     // Get the packs from the module
     const packs = manifestJson.packs || []
+    console.log(packs)
 
     // Process each pack
     for (const pack of packs) {
       const packName = pack.name
+      console.log(packName)
       if (packName) {
         // Compile the JSON file to LevelDB
         await fvtt.compilePack(`packs/${packName}/src`, `packs/${packName}`)
