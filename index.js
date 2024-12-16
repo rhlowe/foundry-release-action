@@ -35,6 +35,7 @@ async function compilePacks () {
         await fvtt.compilePack(`packs/${packName}/src`, `packs/${packName}`)
       }
     }
+    console.log(shell.exec('ls packs'))
   } catch (err) {
     console.error('Error processing packs:', err)
   }
@@ -164,7 +165,7 @@ async function run () {
     await shell.exec(`git config user.email '${committer_email}'`)
     await shell.exec(`git config user.name '${committer_username}'`)
     await shell.exec(`git commit -am 'Release ${versionNumber}'`)
-    await shell.exec(`git archive -o ${zipName} HEAD`)
+    await shell.exec(`git archive -o -u ${zipName} HEAD`)
     await uploadAssets(releaseResponse)
 
     // Log Results
