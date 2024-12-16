@@ -15,6 +15,29 @@ const committer_email = github.context.payload.head_commit.committer.email
 const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
+
+async function compilePacks() {
+  try {
+    // Load and parse module.json
+    const data = await fs.readFile(manifestFileName, 'utf-8')
+    const manifestJson = JSON.parse(data)
+
+    // Get the packs from the module
+    const packs = manifestJson.packs || []
+
+    // Process each pack
+    for (const pack of packs) {
+      const packName = pack.name
+      if (packName) {
+        // Compile the JSON file to LevelDB
+        await compilePack(`packs/${packName}/src`, `packs/${packName}`)
+      }
+    }
+  } catch (err) {
+    console.error('Error processing packs:', err)
+  }
+}
+
 async function createRelease(versionNumber, commitLog) {
   try {
     return await octokit.rest.repos.createRelease({
@@ -45,15 +68,15 @@ async function getCommitLog() {
       owner: owner,
       per_page: 100,
       repo: repo,
-      sha: "main",
+      sha: 'main',
       since: latestRelease.data.created_at,
     })
     let commitListMarkdown = ""
     commitList.data
             .filter(
                     (commit) =>
-                            !commit.commit.author.name.includes("bot") &&
-                            !commit.commit.message.includes("version.txt")
+                            !commit.commit.author.name.includes('bot') &&
+                            !commit.commit.message.includes('version.txt')
             )
             .forEach((commit) => {
               commitListMarkdown += `* ${commit.commit.message} (${commit.commit.author.name})\n`;
@@ -114,29 +137,33 @@ async function run() {
 
 
     // Replace Data in Manifest
-    fs.readdirSync(".").forEach(file => {
+    fs.readdirSync('.').forEach(file => {
       console.log(file);
     });
     const data = fs.readFileSync(manifestFileName, 'utf8')
 
 
     const formatted = data
-            .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
-            .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
-            .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
-            .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
+            .replace(/'version': .*,/i, `'version': '${versionNumber.replace('v', '')}',`)
+            .replace(/'download': .*,/i, `'download': '${downloadURL}',`)
+            .replace(/'manifest': .*,/i, `'manifest': '${manifestURL}',`)
+            .replace(/'protected': .*,/i, `'protected': ${manifestProtectedValue},`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
+    // Create Foundry LevelDB Files from JSON
+    console.log('Compiling packs...')
+    await compilePacks()
+
     // Git List of Commits Since Last Release
-    console.log("Get Commit Log")
+    console.log('Get Commit Log')
     const commitLog = await getCommitLog()
 
     // Create Release
-    console.log("Create Release")
+    console.log('Create Release')
     const releaseResponse = await createRelease(versionNumber, commitLog)
-    await shell.exec(`git config user.email "${committer_email}"`)
-    await shell.exec(`git config user.name "${committer_username}"`)
-    await shell.exec(`git commit -am "Release ${versionNumber}"`)
+    await shell.exec(`git config user.email '${committer_email}'`)
+    await shell.exec(`git config user.name '${committer_username}'`)
+    await shell.exec(`git commit -am 'Release ${versionNumber}'`)
     await shell.exec(`git archive -o ${zipName} HEAD`)
     await uploadAssets(releaseResponse)
 

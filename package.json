@@ -1,7 +1,7 @@
 {
   "name": "foundry-release-action",
-  "version": "0.2.0",
-  "description": "GitHub Action to Release Foundry VTT Systems and Modules",
+  "version": "1.0",
+  "description": "GitHub Action to Create Releases for Foundry VTT Systems and Modules",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -10,7 +10,8 @@
   "keywords": [
     "GitHub",
     "GitHub Action",
-    "Foundry VTT"
+    "Foundry VTT",
+    "FoundryVTT"
   ],
   "author": "Tim L. White (https://github.com/cyface)",
   "license": "MIT",
@@ -21,6 +22,10 @@
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
+    "@foundryvtt/foundryvtt-cli": "^1.0.3",
     "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
   }
 }
