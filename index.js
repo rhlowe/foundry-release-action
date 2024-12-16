@@ -1,10 +1,10 @@
 // noinspection JSUnresolvedFunction,JSIgnoredPromiseFromCall
 
-const core = require('@actions/core')
-const fs = require('fs')
-const github = require('@actions/github')
-const shell = require('shelljs')
-const fvtt = require('@foundryvtt/foundryvtt-cli')
+import * as core from '@actions/core'
+import fs from 'fs'
+import * as github from '@actions/github'
+import shell from 'shelljs'
+import * as fvtt from '@foundryvtt/foundryvtt-cli'
 
 const actionToken = core.getInput('actionToken')
 const manifestFileName = core.getInput('manifestFileName')
