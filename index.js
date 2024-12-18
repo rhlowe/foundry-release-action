@@ -153,8 +153,6 @@ async function run () {
             .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
-    console.log(await shell.exec(`cat ${manifestFileName}`))
-
     // Create Foundry LevelDB Files from JSON
     console.log('Compiling packs...')
     await compilePacks(data)
