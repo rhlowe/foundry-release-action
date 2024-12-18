@@ -29,8 +29,16 @@ async function compilePacks () {
     for (const pack of packs) {
       const packName = pack.name
       if (packName) {
-        // Compile the JSON file to LevelDB
-        await fvtt.compilePack(`packs/${packName}/src`, `packs/${packName}`)
+        const packSrcDir = `packs/${packName}/src`
+        try {
+          const files = fs.readdirSync(packSrcDir);
+          if (files.length !== 0) {
+            // Compile the JSON file to LevelDB
+            await fvtt.compilePack(`packs/${packName}/src`, `packs/${packName}`)
+          }
+        } catch (error) {
+          console.log(`Pack ${packName} src not found`)
+        }
       }
     }
     await shell.exec(`git add -f packs/*`)
@@ -150,8 +158,8 @@ async function run () {
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Create Foundry LevelDB Files from JSON
-    // console.log('Compiling packs...')
-    // await compilePacks()
+    console.log('Compiling packs...')
+    await compilePacks()
 
     // Git List of Commits Since Last Release
     console.log('Get Commit Log')
