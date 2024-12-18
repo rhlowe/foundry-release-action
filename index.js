@@ -147,10 +147,10 @@ async function run () {
     const data = fs.readFileSync(manifestFileName, 'utf8')
 
     const formatted = data
-            .replace(/'version': .*,/i, `'version': '${versionNumber.replace('v', '')}',`)
-            .replace(/'download': .*,/i, `'download': '${downloadURL}',`)
-            .replace(/'manifest': .*,/i, `'manifest': '${manifestURL}',`)
-            .replace(/'protected': .*,/i, `'protected': ${manifestProtectedValue},`)
+            .replace(/"version": .*,/i, `"version": "${versionNumber.replace('v', '')}",`)
+            .replace(/"download": .*,/i, `"download": "${downloadURL}",`)
+            .replace(/"manifest": .*,/i, `"manifest": "${manifestURL}",`)
+            .replace(/"protected": .*,/i, `"protected": ${manifestProtectedValue},`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     console.log(await shell.exec(`cat ${manifestFileName}`))
