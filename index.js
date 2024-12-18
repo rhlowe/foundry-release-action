@@ -16,14 +16,10 @@ const committer_email = github.context.payload.head_commit.committer.email
 const committer_username = github.context.payload.head_commit.committer.username
 const zipName = `${github.context.payload.repository.name}.zip`
 
-async function compilePacks () {
+async function compilePacks (data) {
   try {
-    // Load and parse module.json
-    const data = fs.readFileSync(manifestFileName, 'utf-8')
-    const manifestJson = JSON.parse(data)
-
     // Get the packs from the module
-    const packs = manifestJson.packs || []
+    const packs = data.packs || []
 
     // Process each pack
     for (const pack of packs) {
@@ -157,9 +153,11 @@ async function run () {
             .replace(/'protected': .*,/i, `'protected': ${manifestProtectedValue},`)
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
+    console.log(await shell.exec(`cat ${manifestFileName}`))
+
     // Create Foundry LevelDB Files from JSON
     console.log('Compiling packs...')
-    await compilePacks()
+    await compilePacks(data)
 
     // Git List of Commits Since Last Release
     console.log('Get Commit Log')
