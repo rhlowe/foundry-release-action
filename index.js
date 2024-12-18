@@ -150,8 +150,8 @@ async function run () {
     fs.writeFileSync(manifestFileName, formatted, 'utf8')
 
     // Create Foundry LevelDB Files from JSON
-    console.log('Compiling packs...')
-    await compilePacks()
+    // console.log('Compiling packs...')
+    // await compilePacks()
 
     // Git List of Commits Since Last Release
     console.log('Get Commit Log')
