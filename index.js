@@ -26,6 +26,7 @@ async function compilePacks (data) {
       const packName = pack.name
       if (packName) {
         const packSrcDir = `packs/${packName}/src`
+        console.log(packSrcDir)
         try {
           const files = fs.readdirSync(packSrcDir);
           if (files.length !== 0) {
