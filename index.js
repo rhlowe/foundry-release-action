@@ -18,8 +18,10 @@ const zipName = `${github.context.payload.repository.name}.zip`
 
 async function compilePacks (data) {
   try {
+    //Parse the JSON data
+    data = JSON.parse(data)
+
     // Get the packs from the module
-    console.log(data)
     const packs = data.packs || []
     console.log()
 
