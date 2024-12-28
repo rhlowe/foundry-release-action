@@ -19,7 +19,9 @@ const zipName = `${github.context.payload.repository.name}.zip`
 async function compilePacks (data) {
   try {
     // Get the packs from the module
+    console.log(data)
     const packs = data.packs || []
+    console.log()
 
     // Process each pack
     for (const pack of packs) {
