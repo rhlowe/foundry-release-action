@@ -86,7 +86,8 @@ async function getCommitLog () {
             .filter(
                     (commit) =>
                             !commit.commit.author.name.includes('bot') &&
-                            !commit.commit.message.includes('version.txt')
+                            !commit.commit.message.includes('version.txt') &&
+                            !commit.commit.message.includes('Merge remote-tracking branch')
             )
             .forEach((commit) => {
               commitListMarkdown += `* ${commit.commit.message} (${commit.commit.author.name})\n`
