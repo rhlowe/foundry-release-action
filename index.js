@@ -149,12 +149,12 @@ async function run() {
     versionNumber = `v${versionNumber.trim()}`;
 
     // Set up Download URLs
-    let downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`;
-    let manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
+    let downloadURL = `https://github.com/${owner}/${repo}/raw/refs/tags/${versionNumber}/${repo}.zip`;
+    let manifestURL = `https://github.com/${owner}/${repo}/raw/refs/tags/${versionNumber}/${manifestFileName}`;
     let manifestProtectedValue = "false";
     if (manifestProtectedTrue === "true") {
       downloadURL = "";
-      manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
+      manifestURL = `https://github.com/${owner}/${repo}/raw/refs/tags/${versionNumber}/${manifestFileName}`;
       manifestProtectedValue = "true";
     }
 
