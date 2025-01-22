@@ -151,7 +151,7 @@ async function run() {
     // Set up Download URLs
     let downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`;
     let manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
-    // let manifestProtectedValue = "false";
+    let manifestProtectedValue = "true";
     // if (manifestProtectedTrue === "true") {
     //   downloadURL = "";
     //   manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
