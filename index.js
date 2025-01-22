@@ -151,12 +151,12 @@ async function run() {
     // Set up Download URLs
     let downloadURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${repo}.zip`;
     let manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
-    let manifestProtectedValue = "true";
-    // if (manifestProtectedTrue === "true") {
-    //   downloadURL = "";
-    //   manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
-    //   manifestProtectedValue = "true";
-    // }
+    let manifestProtectedValue = "false";
+    if (manifestProtectedTrue === "true") {
+      downloadURL = "";
+      manifestURL = `https://github.com/${owner}/${repo}/releases/download/${versionNumber}/${manifestFileName}`;
+      manifestProtectedValue = "true";
+    }
 
     // Replace Data in Manifest
     fs.readdirSync(".").forEach((file) => {
