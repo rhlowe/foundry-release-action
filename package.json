@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/foundryvtt-dcc/foundry-release-action.git"
+    "url": "git+https://github.com/rhlowe/foundry-release-action.git"
   },
   "keywords": [
     "GitHub",
@@ -16,9 +16,9 @@
   "author": "Tim L. White (https://github.com/cyface)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/foundryvtt-dcc/foundry-release-action/issues"
+    "url": "https://github.com/rhlowe/foundry-release-action/issues"
   },
-  "homepage": "https://github.com/foundryvtt-dcc/foundry-release-action#readme",
+  "homepage": "https://github.com/rhlowe/foundry-release-action#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",

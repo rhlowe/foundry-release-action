@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Create GitHub Release
         id: github-release
-        uses: foundryvtt-dcc/foundry-release-action@main
+        uses: rhlowe/foundry-release-action@main
         with:
           actionToken: ${{ secrets.GITHUB_TOKEN }}
           manifestFileName: 'module.json'
@@ -43,4 +43,5 @@ You should not need to change `actionToken` from the example above.
 Create a file named `version.txt` at the root of your project, with your desired version number in it (without the `v`) - e.g. `0.20.0`.
 
 ## Creating a Release
+
 When that `version.txt` file is updated, this workflow will create a draft release, including a log of all commits since the last release.  You will need to edit that release with your preferred description, and then publish it.
